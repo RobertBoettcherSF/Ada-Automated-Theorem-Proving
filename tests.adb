@@ -18,11 +18,11 @@ procedure Tests is
 
    -- Helpers to build test clauses concisely
    function C (L1 : Literal) return Clause is 
-      (1 => L1);
+      [1 => L1];
    function C (L1, L2 : Literal) return Clause is 
-      (1 => L1, 2 => L2);
+      [1 => L1, 2 => L2];
    function C (L1, L2, L3 : Literal) return Clause is 
-      (1 => L1, 2 => L2, 3 => L3);
+      [1 => L1, 2 => L2, 3 => L3];
    function C_Empty return Clause is
       Result : Clause (1 .. 0);
    begin
@@ -242,14 +242,14 @@ begin
    -------------------------------------------------------------------------
    Put_Line ("TEST 11 — Resolution & Tautology detection");
    declare
-      Res : Clause := Resolve_Clauses (C (Pos (1), Pos (2)), C (Neg (1), Pos (3)), 1);
+      Res : constant Clause := Resolve_Clauses (C (Pos (1), Pos (2)), C (Neg (1), Pos (3)), 1);
    begin
       Check ("11.1 Resolve correctly drops pivot and combines rest", 
              Res'Length = 2 and then Contains_Literal (Res, Pos (2)) and then Contains_Literal (Res, Pos (3)));
    end;
    
    declare
-      Res : Clause := Resolve_Clauses (C (Pos (1), Pos (2)), C (Neg (1), Neg (2)), 1);
+      Res : constant Clause := Resolve_Clauses (C (Pos (1), Pos (2)), C (Neg (1), Neg (2)), 1);
    begin
       Check ("11.2 Resolve handles tautological outcomes", 
              Is_Tautology (Res));
@@ -261,7 +261,7 @@ begin
    -------------------------------------------------------------------------
    Put_Line ("TEST 12 — Remove Duplicates Behavior");
    declare
-      C_Dup : constant Clause := (1 => Pos (1), 2 => Pos (1));
+      C_Dup : constant Clause := [1 => Pos (1), 2 => Pos (1)];
       C_Cln : constant Clause := Remove_Duplicates (C_Dup);
    begin
       Check ("12.1 Remove_Duplicates shrinks array to 1", C_Cln'Length = 1);
@@ -269,7 +269,7 @@ begin
    end;
    
    declare
-      C_Mix : constant Clause := (1 => Pos (1), 2 => Neg (2), 3 => Pos (1), 4 => Neg (2));
+      C_Mix : constant Clause := [1 => Pos (1), 2 => Neg (2), 3 => Pos (1), 4 => Neg (2)];
       C_Cln : constant Clause := Remove_Duplicates (C_Mix);
    begin
       Check ("12.3 Remove_Duplicates works symmetrically on multi-variables", C_Cln'Length = 2);
