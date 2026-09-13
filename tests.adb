@@ -29,6 +29,25 @@ procedure Tests is
       return Result;
    end C_Empty;
 
+   -- Local helper definition used in Test 9 & 10
+   function Contains_Clause_Helper (Frm : CNF_Formula; Tgt : Clause) return Boolean is
+      Found : Boolean;
+   begin
+      for C of Frm loop
+         if C'Length = Tgt'Length then
+            Found := True;
+            for L_Tgt of Tgt loop
+               if not Contains_Literal (C, L_Tgt) then
+                  Found := False;
+                  exit;
+               end if;
+            end loop;
+            if Found then return True; end if;
+         end if;
+      end loop;
+      return False;
+   end Contains_Clause_Helper;
+
    Empty_F : CNF_Formula;
    F       : CNF_Formula;
    F2      : CNF_Formula;
@@ -269,7 +288,6 @@ begin
           Is_Satisfiable_DPLL (F));
 
    declare
-      Result : Boolean;
    begin
       -- Dynamic predicate or runtime fault protection check: 
       -- A literal with Var=0 cannot be constructed due to Positive constraint.
@@ -285,24 +303,5 @@ begin
    Put_Line ("=== " & Natural'Image (Pass_Count) & " passed, "
              & Natural'Image (Fail_Count) & " failed ===");
    pragma Assert (Fail_Count = 0, "Some tests failed");
-
-   -- Local helper definition used in Test 9 & 10
-   function Contains_Clause_Helper (Frm : CNF_Formula; Tgt : Clause) return Boolean is
-      Found : Boolean;
-   begin
-      for C of Frm loop
-         if C'Length = Tgt'Length then
-            Found := True;
-            for L_Tgt of Tgt loop
-               if not Contains_Literal (C, L_Tgt) then
-                  Found := False;
-                  exit;
-               end if;
-            end loop;
-            if Found then return True; end if;
-         end if;
-      end loop;
-      return False;
-   end Contains_Clause_Helper;
 
 end Tests;
