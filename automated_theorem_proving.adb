@@ -56,7 +56,7 @@ package body Automated_Theorem_Proving is
    end Is_Tautology;
 
    function Remove_Duplicates (C : Clause) return Clause is
-      Result : Clause (1 .. C'Length);
+      Result : Clause (1 .. C'Length) := [others => Pos (1)];
       Count  : Natural := 0;
       Is_Dup : Boolean;
    begin
@@ -152,7 +152,7 @@ package body Automated_Theorem_Proving is
    function Is_Satisfiable_Exhaustive (Formula : CNF_Formula; Max_Var : Variable_ID) return Boolean is
       Max_Combinations : constant Natural := 2 ** Natural (Max_Var);
       type Assignment_Array is array (Variable_ID range 1 .. Max_Var) of Boolean;
-      Assign      : Assignment_Array := (others => False);
+      Assign      : Assignment_Array := [others => False];
       Val         : Natural;
       Formula_Sat : Boolean;
       Clause_Sat  : Boolean;
@@ -226,8 +226,8 @@ package body Automated_Theorem_Proving is
 
       --  Pure Literal Elimination
       declare
-         Pos_Seen : array (Variable_ID range 1 .. Max_V) of Boolean := (others => False);
-         Neg_Seen : array (Variable_ID range 1 .. Max_V) of Boolean := (others => False);
+         Pos_Seen : array (Variable_ID range 1 .. Max_V) of Boolean := [others => False];
+         Neg_Seen : array (Variable_ID range 1 .. Max_V) of Boolean := [others => False];
       begin
          for C of Formula loop
             for L of C loop
@@ -265,8 +265,8 @@ package body Automated_Theorem_Proving is
                L       : constant Literal := First_C (First_C'First);
                F_True  : CNF_Formula := Formula;
                F_False : CNF_Formula := Formula;
-               L_Clause : constant Clause (1 .. 1) := (1 => L);
-               N_Clause : constant Clause (1 .. 1) := (1 => Negate (L));
+               L_Clause : constant Clause (1 .. 1) := [1 => L];
+               N_Clause : constant Clause (1 .. 1) := [1 => Negate (L)];
             begin
                --  Append unit clauses to branch assignments
                F_True.Append (L_Clause);
